@@ -1,0 +1,46 @@
+version: "3.4"
+services:
+  inserter:
+    image: inserter:latest
+    build:
+      context: ./microservice/
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+    networks:
+      - dockerCoaching
+    environment:
+      MONGODB_CONNSTRING: mongodb://admin:admin@db
+    restart: unless-stopped
+
+  db:
+    image: mongo:4
+    networks:
+      - dockerCoaching
+    volumes:
+      - ./data/db/:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USER_NAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_USER_PW}
+    restart: unless-stopped
+  
+  db-gui:
+    image: mongo-express:latest
+    depends_on:
+      - db
+    networks:
+      - dockerCoaching
+    ports:
+      - ${DB_GUI_PORT:-9000}:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${DB_GUI_USER_NAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${DB_GUI_USER_PW}
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DB_ROOT_USER_NAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_ROOT_USER_PW}
+      ME_CONFIG_MONGODB_SERVER: db
+      ME_CONFIG_MONGODB_PORT: 27017
+    restart: unless-stopped
+
+networks:
+  dockerCoaching:

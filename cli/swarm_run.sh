@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-mkdir -p data/;
+mkdir -p data/db/;
 
 if [ -f "./.env" ]
 then

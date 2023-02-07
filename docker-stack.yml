@@ -25,7 +25,7 @@ services:
     networks:
       - dockerCoaching
     volumes:
-      - ./data/:/data/
+      - ./data/db/:/data/db/
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USER_NAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_USER_PW}

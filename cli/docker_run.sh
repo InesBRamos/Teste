@@ -1,11 +1,11 @@
 #!/bin/sh
 set -e
 
-mkdir -p data/;
+mkdir -p data/db/;
 
 docker network create dockerCoaching;
 
-docker run --network=dockerCoaching -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin -v ./data/db/:/data/db --name db -d mongo:4;
+docker run --network=dockerCoaching -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin -v ./data/db/:/data/db/ --name db -d mongo:4;
 
 docker build -f ./microservice/Dockerfile --pull -t inserter:latest ./microservice;
 docker run --network=dockerCoaching -d --restart unless-stopped -e MONGODB_CONNSTRING=mongodb://admin:admin@db --name inserter inserter:latest;
